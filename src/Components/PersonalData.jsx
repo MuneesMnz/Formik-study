@@ -1,5 +1,5 @@
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import Texterror from "./Texterror";
 
@@ -16,8 +16,24 @@ const initialValues = {
   phone: [""],
 };
 
-const onSubmit = (values) => {
+const SaveValues = {
+  name: "MNZ",
+  email: "mnz@gmail.com",
+  company: "fortelogic",
+  details: "abc",
+  address: "asd",
+  social: {
+    facebook: "aaa",
+    instagram: "bbb",
+  },
+  phone: ["123"],
+};
+
+const onSubmit = (values, onsubmitProps) => {
   console.log(values);
+  console.log("onSubmit Props", onsubmitProps);
+  onsubmitProps.setSubmitting(false);
+  onsubmitProps.resetForm();
 };
 
 // const validate = (value) => {
@@ -50,17 +66,19 @@ const validationSchema = Yup.object({
 });
 
 const PersonalData = () => {
+  const [Save, Setsave] = useState(null);
   // console.log(formik.values);
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={Save|| initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
-      validateOnChange={false}
-      validateOnBlur={false}
+      enableReinitialize
+      // validateOnChange={false}
+      // validateOnBlur={false}
     >
       {(formik) => {
-        console.log("Formik" ,formik);
+        // console.log("Formik" ,formik);
         return (
           <div className="flex justify-center">
             <Form>
@@ -217,7 +235,7 @@ const PersonalData = () => {
                 </FieldArray>
               </div>
 
-              <button type="button" onClick={()=>formik.setFieldTouched("company")} style={{border:"1px solid black",padding:"3px" ,marginRight:"3px"}}>Setting company Tounched</button>
+              {/* <button type="button" onClick={()=>formik.setFieldTouched("company")} style={{border:"1px solid black",padding:"3px" ,marginRight:"3px"}}>Setting company Tounched</button>
               <button type="button" onClick={()=>formik.validateField("company")}  style={{border:"1px solid black",padding:"3px",marginRight:"3px"}} >setting company errors</button>
               <button type="button" onClick={()=>formik.validateForm()}  style={{border:"1px solid black",padding:"3px",marginRight:"3px"}}>setting Errors</button>
               <button type="button" onClick={()=>formik.setTouched({
@@ -226,13 +244,25 @@ const PersonalData = () => {
                 company:true,
                 social:true,
                 address:true
-              })}  style={{border:"1px solid black",padding:"3px",marginRight:"3px"}}>Setting Touched All</button>
+              })}  style={{border:"1px solid black",padding:"3px",marginRight:"3px"}}>Setting Touched All</button> */}
 
+              <button
+                style={{
+                  border: "1px solid black",
+                  padding: "3px",
+                  marginRight: "3px",
+                }}
+                type="button"
+                onClick={()=>Setsave(SaveValues )}
+              >
+                Save Data
+              </button>
               <input
                 type="submit"
                 style={{ border: "1px solid gray" }}
                 className="p-2 bg-slate-400 rounded text-white font-semibold"
-                disabled={!formik.isValid}
+                // disabled={!(formik.dirty &&formik.isValid)}
+                disabled={!formik.isValid || formik.isSubmitting}
               />
             </Form>
           </div>
